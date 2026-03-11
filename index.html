@@ -14,53 +14,55 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
       user-select: none;
       -webkit-user-select: none;
     }
 
     h1 {
       color: white;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
 
     .stats {
       display: flex;
-      gap: 30px;
-      margin-bottom: 20px;
+      gap: 20px;
+      margin-bottom: 12px;
       color: white;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .stats span {
       background: rgba(255,255,255,0.2);
-      padding: 8px 20px;
+      padding: 6px 18px;
       border-radius: 25px;
       backdrop-filter: blur(5px);
     }
 
     .board {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      max-width: 800px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      max-width: 950px;
       width: 100%;
       perspective: 1000px;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .board {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
       }
-      h1 { font-size: 1.8rem; }
-      .stats { font-size: 1rem; gap: 15px; }
+      h1 { font-size: 1.6rem; }
+      .stats { font-size: 1rem; gap: 10px; }
+      .card-number { font-size: 2rem !important; width: 46px !important; height: 46px !important; }
+      .card-front .card-number { font-size: 1rem !important; width: 26px !important; height: 26px !important; }
     }
 
     .card {
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 5 / 3;
       cursor: pointer;
       position: relative;
       transform-style: preserve-3d;
@@ -97,7 +99,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .card-back {
@@ -105,21 +107,34 @@
       border: 3px solid #fff;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
     }
 
-    .card-back img {
-      width: 60px;
-      height: 60px;
-      opacity: 0.9;
-      filter: brightness(0) invert(1);
-    }
-
-    .card-back .q-mark {
+    .card-number {
+      background: rgba(255,255,255,0.95);
+      color: #ff6f61;
       font-size: 2.5rem;
-      color: white;
-      font-weight: bold;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      font-weight: 900;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 2;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .card-front .card-number {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      font-size: 1.2rem;
+      width: 30px;
+      height: 30px;
+      opacity: 0.7;
     }
 
     .card-front {
@@ -134,12 +149,13 @@
       height: 100%;
       object-fit: contain;
       padding: 5px;
+      border-radius: 12px;
     }
 
     .btn-restart {
-      margin-top: 25px;
-      padding: 15px 40px;
-      font-size: 1.3rem;
+      margin-top: 15px;
+      padding: 12px 35px;
+      font-size: 1.2rem;
       border: none;
       border-radius: 30px;
       background: linear-gradient(145deg, #ff9a56, #ff6f61);
@@ -229,12 +245,12 @@
 
   <div class="stats">
     <span>ניסיונות: <strong id="attempts">0</strong></span>
-    <span>זוגות: <strong id="pairs">0</strong> / <strong id="totalPairs">4</strong></span>
+    <span>זוגות: <strong id="pairs">0</strong> / <strong id="totalPairs">5</strong></span>
   </div>
 
   <div class="board" id="board"></div>
 
-  <button class="btn-restart" id="restartBtn" onclick="initGame()">משחק חדש 🔄</button>
+  <button class="btn-restart" onclick="initGame()">משחק חדש 🔄</button>
 
   <div class="overlay" id="overlay">
     <div class="win-card">
@@ -268,7 +284,7 @@
       document.getElementById('attempts').textContent = '0';
       document.getElementById('pairs').textContent = '0';
 
-      // Create pairs
+      // Create pairs: 5 cards x 2 = 10 cards
       let deck = [];
       CARDS.forEach((card, idx) => {
         deck.push({ ...card, pairId: idx });
@@ -280,16 +296,17 @@
       board.innerHTML = '';
 
       deck.forEach((card, i) => {
+        const cardNum = i + 1; // 1-10 for Zoom!
         const el = document.createElement('div');
         el.className = 'card';
         el.dataset.pairId = card.pairId;
         el.dataset.index = i;
         el.innerHTML = `
           <div class="card-face card-back">
-            <img src="${CARD_BACK}" alt="card back">
-            <span class="q-mark">?</span>
+            <span class="card-number">${cardNum}</span>
           </div>
           <div class="card-face card-front">
+            <span class="card-number">${cardNum}</span>
             <img src="${card.src}" alt="${card.name}">
           </div>
         `;
